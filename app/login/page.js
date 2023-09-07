@@ -21,7 +21,10 @@ function page() {
 
   return (
     <div>
-      <form onSubmit={login} method="post">
+      <form
+        onSubmit={() => login(email, password)}
+        method="post"
+      >
         <label htmlFor="email">Email</label>
         <TextField
           id="outlined-basic"
