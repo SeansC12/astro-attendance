@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 function page() {
   const [email, setEmail] = useState("");

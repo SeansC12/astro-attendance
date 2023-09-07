@@ -7,7 +7,7 @@ export async function middleware(req) {
     req.nextUrl.pathname.startsWith("/api/logAttendance")
   ) {
     const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET
+      process.env.NEXT_PUBLIC_JWT_SECRET
     );
     const body = await req.json();
 
