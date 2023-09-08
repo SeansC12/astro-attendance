@@ -1,43 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
+import React from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useRouter } from "next/navigation";
 
 function page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const supabase = createClientComponentClient();
-  const router = useRouter();
 
-  async function login(email, password) {
-    const data = await supabase.auth.signInWithPassword({
-      email,
-      password,
+  async function login() {
+    const data = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/auth/callback`,
+      },
     });
-    router.push("/");
+    console.log(data);
   }
 
   return (
     <div>
-      <form
-        onSubmit={() => login(email, password)}
-        method="post"
-      >
-        <label htmlFor="email">Email</label>
-        <TextField
-          id="outlined-basic"
-          name="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <label htmlFor="password">Password</label>
-        <TextField
-          type="password"
-          name="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Log In</button>
+      <form>
+        <button onClick={login}>Log In</button>
       </form>
     </div>
   );

@@ -23,10 +23,10 @@ export async function middleware(req) {
         { status: 200 }
       );
     }
-  } else {
-    const res = NextResponse.next();
-    const supabase = createMiddlewareClient({ req, res });
-    await supabase.auth.getSession();
-    return res;
   }
+
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
+  await supabase.auth.getSession();
+  return res;
 }
