@@ -19,7 +19,7 @@ function page() {
   return (
     <div>
       <form>
-        <button onClick={login}>Log In</button>
+        <button onClick={login}>Log In With Google</button>
       </form>
     </div>
   );

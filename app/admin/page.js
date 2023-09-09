@@ -9,7 +9,7 @@ function page() {
   const [time, setTime] = useState(Date.now());
 
   (async function getToken() {
-    const iat = Math.floor(Date.now() / 1000);
+    const iat = Math.floor(Date.now() / 5000);
     const exp = iat + 15;
     const secret = new TextEncoder().encode(
       process.env.NEXT_PUBLIC_JWT_SECRET
@@ -28,7 +28,7 @@ function page() {
   useEffect(() => {
     const interval = setInterval(
       () => setTime(Date.now()),
-      15000
+      5000
     );
     return () => {
       clearInterval(interval);
