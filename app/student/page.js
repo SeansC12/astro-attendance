@@ -30,9 +30,11 @@ function page() {
   const [text, setText] = useState("");
 
   return (
-    <div className="w-[40%] aspect-square">
-      <QrScanner onDecode={(result) => scanned(result)} />
-      <div>{text}</div>
+    <div className="w-[100vw] h-[100vh] flex items-center justify-center">
+      <div className="w-[80%] aspect-square">
+        <QrScanner onDecode={(result) => scanned(result)} />
+        <div>{text}</div>
+      </div>
     </div>
   );
 }
