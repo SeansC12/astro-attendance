@@ -10,7 +10,6 @@ export async function middleware(req) {
       process.env.NEXT_PUBLIC_JWT_SECRET
     );
     const body = await req.json();
-    console.log(body.token);
 
     try {
       await jwtVerify(body.token, secret, {
@@ -19,7 +18,6 @@ export async function middleware(req) {
       });
       NextResponse.next();
     } catch (err) {
-      console.log(err);
       return NextResponse.json(
         {
           message:
