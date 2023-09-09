@@ -1,24 +1,33 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import QRCode from "react-qr-code";
 import { SignJWT } from "jose";
+import nebula from "@/public/nebula.jpeg";
 
 function page() {
   const [token, setToken] = useState("");
   const [time, setTime] = useState(Date.now());
+  const today = new Date();
+  const day = String(today.getDate());
+  const month = months[today.getMonth() + 1];
+  const year = today.getFullYear();
 
   (async function getToken() {
     const iat = Math.floor(Date.now() / 5000);
-    const exp = iat + 15;
     const secret = new TextEncoder().encode(
       process.env.NEXT_PUBLIC_JWT_SECRET
     );
 
-    const token = await new SignJWT({})
-      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-      .setExpirationTime(exp)
+    const token = await new SignJWT({
+      "urn:example:claim": true,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("15s")
       .setIssuedAt(iat)
+      .setIssuer("urn:example:issuer")
+      .setAudience("urn:example:audience")
       .setNotBefore(iat)
       .sign(secret);
 
@@ -28,7 +37,7 @@ function page() {
   useEffect(() => {
     const interval = setInterval(
       () => setTime(Date.now()),
-      5000
+      15000
     );
     return () => {
       clearInterval(interval);
@@ -36,10 +45,37 @@ function page() {
   }, []);
 
   return (
-    <div className="p-5">
-      <QRCode value={token} />
+    <div className="p-5 w-full h-[100vh]">
+      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-5">
+        {day} of {month} {year}
+      </div>
+      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+        <div className="bg-orange-500 p-3 rounded-md">
+          <QRCode value={token} />
+        </div>
+      </div>
+      <Image
+        className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full h-full z-10 overflow-hidden grayscale-[10%] object-cover"
+        loading="lazy"
+        src={nebula}
+      />
     </div>
   );
 }
+
+var months = {
+  1: "January",
+  2: "February",
+  3: "March",
+  4: "April",
+  5: "May",
+  6: "June",
+  7: "July",
+  8: "August",
+  9: "September",
+  10: "October",
+  11: "November",
+  12: "December",
+};
 
 export default page;

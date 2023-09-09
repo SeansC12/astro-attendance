@@ -10,29 +10,29 @@ function page() {
     );
     if (!confirmed) return;
 
+    setText("Loading...");
     const res = await fetch("/api/logAttendance", {
       method: "POST",
       body: JSON.stringify({
         token: result,
       }),
     });
-    console.log(res);
     const data = await res.json();
 
     if (res.status === 200) {
-      setError(data.message);
+      setText(data.message);
       return;
     }
 
     setError("Something went wrong. Please try again");
   }
 
-  const [error, setError] = useState("");
+  const [text, setText] = useState("");
 
   return (
     <div className="w-[40%] aspect-square">
       <QrScanner onDecode={(result) => scanned(result)} />
-      <div>{error}</div>
+      <div>{text}</div>
     </div>
   );
 }

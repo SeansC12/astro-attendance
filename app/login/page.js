@@ -30,10 +30,11 @@ function page() {
             Log In With Google
           </button>
         </div>
-        <div>Built with no ❤️ at all by Sean & Harish</div>
+        {/* <div>Built with no ❤️ at all by Sean & Harish</div> */}
       </div>
       <Image
         className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full h-full z-10 overflow-hidden grayscale-[10%] object-cover"
+        loading="lazy"
         src={mars}
       />
     </div>
