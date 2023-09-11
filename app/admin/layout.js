@@ -1,11 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 function layout({ children }) {
   const [selectedPageIndex, setSelectedPageIndex] =
     useState(0);
+
+  useEffect(() => {
+    if (String(window.location).endsWith("sheets")) {
+      setSelectedPageIndex(0);
+    } else if (String(window.location).endsWith("qr")) {
+      setSelectedPageIndex(1);
+    } else if (
+      String(window.location).endsWith("absence")
+    ) {
+      setSelectedPageIndex(2);
+    }
+  }, []);
+
   return (
     <div className="w-full h-[100vh]">
       <div className="w-full h-[10%] bg-slate-400 text-white flex items-center justify-evenly">
