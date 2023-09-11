@@ -6,6 +6,31 @@ import QRCode from "react-qr-code";
 import { SignJWT } from "jose";
 import nebula from "@/public/nebula.jpeg";
 
+const listenSSE = (callback) => {
+  const eventSource = new EventSource(
+    "/api/onAttendanceLogged",
+    {
+      withCredentials: true,
+    }
+  );
+  eventSource.onmessage = (event) => {
+    console.log(event);
+    // const result = callback(event);
+    // if (result?.cancel) {
+    //   console.info("Closing SSE");
+    //   eventSource.close();
+    // }
+  };
+  console.info("Listenting on SSE", eventSource);
+
+  return {
+    close: () => {
+      console.info("Closing SSE");
+      eventSource.close();
+    },
+  };
+};
+
 function page() {
   const [token, setToken] = useState("");
   const [time, setTime] = useState(Date.now());
@@ -34,13 +59,25 @@ function page() {
     setToken(token);
   })();
 
+  // useEffect(() => {
+  //   const interval = setInterval(
+  //     () => setTime(Date.now()),
+  //     15000
+  //   );
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const interval = setInterval(
-      () => setTime(Date.now()),
-      15000
+    const eventSource = new EventSource(
+      "/api/onAttendanceLogged"
     );
+    eventSource.onmessage = (event) => {
+      console.log(event);
+    };
     return () => {
-      clearInterval(interval);
+      eventSource.close();
     };
   }, []);
 
