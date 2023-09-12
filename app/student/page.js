@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
+import Link from "next/link";
 
 function page() {
   async function scanned(result) {
@@ -30,9 +31,9 @@ function page() {
   const [text, setText] = useState("");
 
   return (
-    <div className="w-[40%] aspect-square">
+    <div className="w-[40%] aspect-square m-auto">
       <QrScanner onDecode={(result) => scanned(result)} />
-      <div>{text}</div>
+      <Link href= "/student/absenteeForm"><p>cum</p></Link>
     </div>
   );
 }
