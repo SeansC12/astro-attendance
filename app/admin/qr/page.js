@@ -24,7 +24,7 @@ function page() {
       "urn:example:claim": true,
     })
       .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("15s")
+      .setExpirationTime("1h")
       .setIssuedAt(iat)
       .setIssuer("urn:example:issuer")
       .setAudience("urn:example:audience")
