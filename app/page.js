@@ -15,7 +15,7 @@ async function redirectToRelevantPage(supabase, redirect) {
     emailDomain === "sst.edu.sg" ||
     user.email === "sean.ulric.chua@gmail.com"
   ) {
-    redirect("/admin");
+    redirect("/admin/qr");
     return;
   }
   redirect("/student");
