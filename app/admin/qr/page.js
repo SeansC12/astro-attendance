@@ -24,7 +24,7 @@ function page() {
       "urn:example:claim": true,
     })
       .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("15s")
+      .setExpirationTime("1h")
       .setIssuedAt(iat)
       .setIssuer("urn:example:issuer")
       .setAudience("urn:example:audience")
@@ -45,8 +45,8 @@ function page() {
   }, []);
 
   return (
-    <div className="p-5 w-full h-[100vh]">
-      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-5">
+    <div className="w-full h-full relative">
+      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-[22%] text-4xl font-bold text-white">
         {day} of {month} {year}
       </div>
       <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
@@ -55,7 +55,7 @@ function page() {
         </div>
       </div>
       <Image
-        className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-full h-full z-10 overflow-hidden grayscale-[10%] object-cover"
+        className="w-full h-full overflow-hidden grayscale-[10%] object-cover"
         loading="lazy"
         src={nebula}
       />
