@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
 
 function page() {
   async function scanned(result) {
