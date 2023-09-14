@@ -6,7 +6,8 @@ export async function POST(req) {
   const body = await req.json();
   try {
     const serviceAccountAuth = new JWT({
-      email: "sean.ulric.chua@gmail.com",
+      email:
+        "next-js-backend@astro-attendance.iam.gserviceaccount.com",
       key: process.env.GOOGLE_SHEETS_PRIVATE_KEY.split(
         String.raw`\n`
       ).join("\n"),
@@ -20,14 +21,21 @@ export async function POST(req) {
       serviceAccountAuth
     );
 
-    await doc.loadInfo(); // loads document properties and worksheets
-    console.log(doc.title);
-
+    await doc.loadInfo();
+    const sheet = doc.sheetsByTitle["Term 4"];
+    const rows = await sheet.getRows();
+    for (const row of rows.slice(1)) {
+      if (row._rawData.includes(body.email)) {
+        row.set(body.date, "1");
+        await row.save();
+      }
+    }
     return NextResponse.json(
       { message: "Valid Attendance" },
       { status: 200 }
     );
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       {
         message: `${err.response.data.error_description}. Please try again`,

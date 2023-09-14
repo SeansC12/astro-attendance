@@ -17,11 +17,20 @@ function page() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    );
+    const yyyy = today.getFullYear();
+
     const res = await fetch("/api/logAttendance", {
       method: "POST",
       body: JSON.stringify({
         token: result,
         email: user.email,
+        date: `${dd}/${mm}/${yyyy}`,
       }),
     });
     const data = await res.json();
@@ -45,12 +54,21 @@ function page() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(
+      2,
+      "0"
+    );
+    const yyyy = today.getFullYear();
+
     const res = await fetch("/api/logAttendance", {
       method: "POST",
       body: JSON.stringify({
         token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1MzMzNjE0LCJpYXQiOjMzODkyMjcyMiwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODkyMjcyMn0.xvS4fW8I5-t2MGijhrafgjTx0f0IgdRaPcI9ZsSAXG0",
+          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
         email: user.email,
+        date: `${dd}/${mm}/${yyyy}`,
       }),
     });
     const data = await res.json();
