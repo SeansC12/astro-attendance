@@ -19,6 +19,7 @@
     "autoprefixer": "10.4.15",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "google-spreadsheet": "^4.0.3",
     "googleapis": "^126.0.1",
     "jose": "^4.14.6",
     "next": "13.4.19",

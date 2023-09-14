@@ -49,7 +49,7 @@ function page() {
       method: "POST",
       body: JSON.stringify({
         token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk0NDk0OTU1LCJpYXQiOjMzODg5ODI3MSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODg5ODI3MX0.hOEsm_WINPObCVca6l_HN5Ao-6L2N8RlgMmFYmTv_ww",
+          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1MzMzNjE0LCJpYXQiOjMzODkyMjcyMiwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODkyMjcyMn0.xvS4fW8I5-t2MGijhrafgjTx0f0IgdRaPcI9ZsSAXG0",
         email: user.email,
       }),
     });
@@ -71,7 +71,9 @@ function page() {
       <div className="w-[80%] aspect-square">
         <QrScanner onDecode={(result) => scanned(result)} />
         <div>{text}</div>
-        <Link href= "/student/absenteeForm"><p>cum</p></Link>
+        <Link href="/student/absenteeForm">
+          <p>Absentee Form</p>
+        </Link>
       </div>
       <button onClick={fake_scanned}>test</button>
     </div>

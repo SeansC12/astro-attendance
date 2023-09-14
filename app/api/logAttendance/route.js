@@ -1,39 +1,36 @@
 import { NextResponse } from "next/server";
-import { google } from "googleapis";
+import { GoogleSpreadsheet } from "google-spreadsheet";
+import { JWT } from "google-auth-library";
 
 export async function POST(req) {
   const body = await req.json();
   try {
-    const target = [
-      "https://www.googleapis.com/auth/spreadsheets.readonly",
-    ];
-    const jwt = new google.auth.JWT(
-      body.email,
-      null,
-      process.env.GOOGLE_SHEETS_PRIVATE_KEY || "",
-      target
+    const serviceAccountAuth = new JWT({
+      email: "sean.ulric.chua@gmail.com",
+      key: process.env.GOOGLE_SHEETS_PRIVATE_KEY.split(
+        String.raw`\n`
+      ).join("\n"),
+      scopes: [
+        "https://www.googleapis.com/auth/spreadsheets",
+      ],
+    });
+
+    const doc = new GoogleSpreadsheet(
+      process.env.SPREADSHEET_ID,
+      serviceAccountAuth
     );
-    const sheets = google.sheets({
-      version: "v4",
-      auth: jwt,
-    });
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: "Term 4", // sheet name
-    });
-    const rows = response.data.values;
-    console.log(rows);
-    console.log("hi");
+
+    await doc.loadInfo(); // loads document properties and worksheets
+    console.log(doc.title);
+
     return NextResponse.json(
       { message: "Valid Attendance" },
       { status: 200 }
     );
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       {
-        message:
-          "Something went wrong in logging your attendance. Please try again.",
+        message: `${err.response.data.error_description}. Please try again`,
       },
       { status: 200 }
     );

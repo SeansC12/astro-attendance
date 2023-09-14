@@ -24,7 +24,7 @@ function page() {
       "urn:example:claim": true,
     })
       .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1h")
+      .setExpirationTime("200h")
       .setIssuedAt(iat)
       .setIssuer("urn:example:issuer")
       .setAudience("urn:example:audience")
@@ -32,6 +32,7 @@ function page() {
       .sign(secret);
 
     setToken(token);
+    console.log(token);
   })();
 
   useEffect(() => {
