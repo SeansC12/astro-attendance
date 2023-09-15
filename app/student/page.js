@@ -89,7 +89,7 @@ function page() {
       <div className="w-[80%] aspect-square">
         <QrScanner onDecode={(result) => scanned(result)} />
         <div>{text}</div>
-        <Link href="/student/absenteeForm">
+        <Link href="/student/absentee-form">
           <p>Absentee Form</p>
         </Link>
       </div>
