@@ -47,7 +47,7 @@ function page() {
 
   return (
     <div className="w-full h-full relative">
-      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center justify-center flex-col gap-14">
+      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center justify-center flex-col gap-16">
         <div className="text-5xl font-bold text-indigo-400">
           {day} of {month} {year}
         </div>
