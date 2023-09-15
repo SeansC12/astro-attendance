@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import QRCode from "react-qr-code";
 import { SignJWT } from "jose";
-import nebula from "@/public/nebula.jpeg";
+import nebula from "@/public/stars.jpg";
 
 function page() {
   const [token, setToken] = useState("");
@@ -47,16 +47,16 @@ function page() {
 
   return (
     <div className="w-full h-full relative">
-      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-[22%] text-4xl font-bold text-white">
-        {day} of {month} {year}
-      </div>
-      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
-        <div className="bg-orange-500 p-3 rounded-md">
+      <div className="absolute z-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center justify-center flex-col gap-14">
+        <div className="text-5xl font-bold text-indigo-400">
+          {day} of {month} {year}
+        </div>
+        <div className="bg-indigo-400 p-3 rounded-md">
           <QRCode value={token} />
         </div>
       </div>
       <Image
-        className="w-full h-full overflow-hidden grayscale-[10%] object-cover"
+        className="w-full h-full grayscale-[100%] pointer-events-none"
         loading="lazy"
         src={nebula}
       />
