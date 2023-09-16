@@ -3,8 +3,6 @@
 import React, { useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Link from "next/link";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +14,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 
 function page() {
   const [text, setText] = useState("");
@@ -85,7 +82,7 @@ function page() {
       method: "POST",
       body: JSON.stringify({
         token:
-          "yJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
+          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
         email: user.email,
         date: `${dd}/${mm}/${yyyy}`,
       }),
@@ -108,38 +105,44 @@ function page() {
   }
 
   return (
-    <div className="w-[100vw] h-[100vh] flex items-center justify-center flex-col bg-black text-white">
-      <div className="w-[80%] max-w-3xl aspect-square p-2 bg-indigo-400 rounded-md">
-        <QrScanner
-          onDecode={(result) => {
-            setQrResult(result);
-            setConfirmationOpen(true);
-          }}
-        />
-        <div>{text}</div>
+    <div className="w-full h-full">
+      <div className="absolute text-xl font-bold text-white text-center w-full top-36 px-3">
+        Welcome, scan your attendance here.
       </div>
-      <button onClick={() => setConfirmationOpen(true)}>
-        Test endpoint manually
-      </button>
-      <ConfirmationDialog
-        open={confirmationOpen}
-        setOpen={setConfirmationOpen}
-        callback={fake_scanned}
-        result={qrResult}
-      />
-      <LoadingDialog
-        open={loadingOpen}
-        setOpen={setLoadingOpen}
-      />
-      <SuccessDialog
-        open={successOpen}
-        setOpen={setSuccessOpen}
-      />
-      <ErrorDialog
-        open={errorOpen}
-        setOpen={setErrorOpen}
-        description={text}
-      />
+      <div className="w-full h-full flex items-center justify-center flex-col bg-black text-white">
+        <div className="w-[80%] max-w-xl h-max aspect-square p-2 border-2 border-indigo-400 rounded-md">
+          <QrScanner
+            onDecode={(result) => {
+              setQrResult(result);
+              setConfirmationOpen(true);
+            }}
+            viewFinderBorder={10}
+          />
+          <div>{text}</div>
+        </div>
+        <button onClick={() => setConfirmationOpen(true)}>
+          Test endpoint manually
+        </button>
+        <ConfirmationDialog
+          open={confirmationOpen}
+          setOpen={setConfirmationOpen}
+          callback={fake_scanned}
+          result={qrResult}
+        />
+        <LoadingDialog
+          open={loadingOpen}
+          setOpen={setLoadingOpen}
+        />
+        <SuccessDialog
+          open={successOpen}
+          setOpen={setSuccessOpen}
+        />
+        <ErrorDialog
+          open={errorOpen}
+          setOpen={setErrorOpen}
+          description={text}
+        />
+      </div>
     </div>
   );
 }
