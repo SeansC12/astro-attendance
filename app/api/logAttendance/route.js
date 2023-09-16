@@ -40,7 +40,7 @@ export async function POST(req) {
       {
         message: `${err.response.data.error_description}. Please try again`,
       },
-      { status: 200 }
+      { status: 201 }
     );
   }
 }

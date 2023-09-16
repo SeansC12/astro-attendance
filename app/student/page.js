@@ -19,6 +19,15 @@ import {
 import { Button } from "@/components/ui/button";
 
 function page() {
+  const [text, setText] = useState("");
+  const [confirmationOpen, setConfirmationOpen] =
+    useState(false);
+  const [loadingOpen, setLoadingOpen] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [qrResult, setQrResult] = useState("");
+  const supabase = createClientComponentClient();
+
   async function scanned(result) {
     const confirmed = window.confirm(
       "Would you like to log your attendance?"
@@ -57,12 +66,9 @@ function page() {
   }
 
   async function fake_scanned(result) {
-    const confirmed = window.confirm(
-      "Would you like to log your attendance?"
-    );
-    if (!confirmed) return;
-
     setText("Loading...");
+    setConfirmationOpen(false);
+    setLoadingOpen(true);
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -79,25 +85,27 @@ function page() {
       method: "POST",
       body: JSON.stringify({
         token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
+          "yJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
         email: user.email,
         date: `${dd}/${mm}/${yyyy}`,
       }),
     });
     const data = await res.json();
 
+    setLoadingOpen(false);
+    console.log(res.status, data.message);
     if (res.status === 200) {
+      setSuccessOpen(true);
+      setText(data.message);
+      return;
+    } else if (res.status === 201) {
+      setErrorOpen(true);
       setText(data.message);
       return;
     }
 
-    setError("Something went wrong. Please try again");
+    setText("Something went wrong. Please try again");
   }
-
-  const [text, setText] = useState("");
-  const [open, setOpen] = useState("");
-  const [qrResult, setQrResult] = useState("");
-  const supabase = createClientComponentClient();
 
   return (
     <div className="w-[100vw] h-[100vh] flex items-center justify-center">
@@ -110,20 +118,35 @@ function page() {
           <p>Absentee Form</p>
         </Link>
       </div>
-      <button onClick={() => setOpen((curr) => !curr)}>
+      <button
+        onClick={() => setConfirmationOpen((curr) => !curr)}
+      >
         open
       </button>
-      <AlertDialogDemo
-        open={open}
-        setOpen={setOpen}
+      <ConfirmationDialog
+        open={confirmationOpen}
+        setOpen={setConfirmationOpen}
         callback={fake_scanned}
         result={qrResult}
+      />
+      <LoadingDialog
+        open={loadingOpen}
+        setOpen={setLoadingOpen}
+      />
+      <SuccessDialog
+        open={successOpen}
+        setOpen={setSuccessOpen}
+      />
+      <ErrorDialog
+        open={errorOpen}
+        setOpen={setErrorOpen}
+        description={text}
       />
     </div>
   );
 }
 
-function AlertDialogDemo({
+function ConfirmationDialog({
   open,
   setOpen,
   callback,
@@ -154,6 +177,84 @@ function AlertDialogDemo({
           >
             Continue
           </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function LoadingDialog({ open, setOpen }) {
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        {/* <Button variant="outline">Show Dialog</Button> */}
+      </AlertDialogTrigger>
+      <AlertDialogContent className="dark:bg-yellow-300">
+        <AlertDialogHeader className="">
+          <AlertDialogTitle className="text-black">
+            Your attendance is being logged. Please wait.
+          </AlertDialogTitle>
+          <AlertDialogDescription className="dark:text-slate-600">
+            Please do not leave this page until a Success
+            page has been shown. Attendance may not be
+            logged should you leave the page prematurely.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {/* <AlertDialogFooter>
+          <AlertDialogCancel className="text-white">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => callback(result)}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter> */}
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function SuccessDialog({ open, setOpen }) {
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        {/* <Button variant="outline">Show Dialog</Button> */}
+      </AlertDialogTrigger>
+      <AlertDialogContent className="dark:bg-green-500">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-black">
+            Your attendance has been confirmed.
+          </AlertDialogTitle>
+          <AlertDialogDescription className="dark:text-slate-900">
+            You may now leave this page.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function ErrorDialog({ open, setOpen, description }) {
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        {/* <Button variant="outline">Show Dialog</Button> */}
+      </AlertDialogTrigger>
+      <AlertDialogContent className="dark:bg-red-400">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-black">
+            Oh, no. Something went wrong. Please try again.
+          </AlertDialogTitle>
+          <AlertDialogDescription className="dark:text-slate-900">
+            {description}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogAction>Close</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

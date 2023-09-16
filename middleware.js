@@ -21,9 +21,9 @@ export async function middleware(req) {
       return NextResponse.json(
         {
           message:
-            "Unable to validate attendance. Please try again",
+            "Unable to validate attendance. A possible reason is expired QR code value. Please try again.",
         },
-        { status: 200 }
+        { status: 201 }
       );
     }
   }
