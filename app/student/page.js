@@ -108,20 +108,18 @@ function page() {
   }
 
   return (
-    <div className="w-[100vw] h-[100vh] flex items-center justify-center">
-      <div className="w-[80%] aspect-square">
+    <div className="w-[100vw] h-[100vh] flex items-center justify-center flex-col bg-black text-white">
+      <div className="w-[80%] max-w-3xl aspect-square p-2 bg-indigo-400 rounded-md">
         <QrScanner
-          onDecode={(result) => setQrResult(result)}
+          onDecode={(result) => {
+            setQrResult(result);
+            setConfirmationOpen(true);
+          }}
         />
         <div>{text}</div>
-        <Link href="/student/absentee-form">
-          <p>Absentee Form</p>
-        </Link>
       </div>
-      <button
-        onClick={() => setConfirmationOpen((curr) => !curr)}
-      >
-        open
+      <button onClick={() => setConfirmationOpen(true)}>
+        Test endpoint manually
       </button>
       <ConfirmationDialog
         open={confirmationOpen}
