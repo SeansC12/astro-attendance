@@ -26,43 +26,6 @@ function page() {
   const supabase = createClientComponentClient();
 
   async function scanned(result) {
-    const confirmed = window.confirm(
-      "Would you like to log your attendance?"
-    );
-    if (!confirmed) return;
-
-    setText("Loading...");
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(
-      2,
-      "0"
-    );
-    const yyyy = today.getFullYear();
-
-    const res = await fetch("/api/logAttendance", {
-      method: "POST",
-      body: JSON.stringify({
-        token: result,
-        email: user.email,
-        date: `${dd}/${mm}/${yyyy}`,
-      }),
-    });
-    const data = await res.json();
-
-    if (res.status === 200) {
-      setText(data.message);
-      return;
-    }
-
-    setError("Something went wrong. Please try again");
-  }
-
-  async function fake_scanned(result) {
     setText("Loading...");
     setConfirmationOpen(false);
     setLoadingOpen(true);
@@ -81,8 +44,7 @@ function page() {
     const res = await fetch("/api/logAttendance", {
       method: "POST",
       body: JSON.stringify({
-        token:
-          "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo",
+        token: result,
         email: user.email,
         date: `${dd}/${mm}/${yyyy}`,
       }),
@@ -126,8 +88,10 @@ function page() {
         <ConfirmationDialog
           open={confirmationOpen}
           setOpen={setConfirmationOpen}
-          callback={fake_scanned}
-          result={qrResult}
+          callback={scanned}
+          result={
+            "eyJhbGciOiJIUzI1NiJ9.eyJ1cm46ZXhhbXBsZTpjbGFpbSI6dHJ1ZSwiZXhwIjoxNjk1NDIwODQ2LCJpYXQiOjMzODk0MDE2OSwiaXNzIjoidXJuOmV4YW1wbGU6aXNzdWVyIiwiYXVkIjoidXJuOmV4YW1wbGU6YXVkaWVuY2UiLCJuYmYiOjMzODk0MDE2OX0.kDuCRiEY6fG2YsGhSPjTR20d2M1Hhn_C77DAkcawyPo"
+          }
         />
         <LoadingDialog
           open={loadingOpen}

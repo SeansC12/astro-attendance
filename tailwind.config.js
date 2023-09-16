@@ -16,6 +16,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        lato: ["var(--font-lato)"],
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

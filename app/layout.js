@@ -1,7 +1,11 @@
 import "./globals.css";
 import { Lato } from "next/font/google";
 
-const lato = Lato({ subsets: ["latin"], weight: "400" });
+const lato = Lato({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-lato",
+});
 
 export const metadata = {
   title: "Create Next App",
