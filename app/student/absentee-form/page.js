@@ -48,16 +48,17 @@ export default function absenteeForm() {
     }
   }
 
-  async function retrieveUserData() {
+  async function writeEmailToState() {
     const { data } = await supabase.auth.getUser();
+    setEmail(data.user.email);
     return data.user.email;
   }
   useEffect(() => {
-    setEmail(retrieveUserData());
+    writeEmailToState();
   }, []);
 
   return (
-    <div className="px-5">
+    <div className="px-5 text-white">
       <div className="w-full flex items-center flex-col gap-7">
         <div className="grid w-full max-w-sm items-center gap-1.5 text-white font-lato mt-5">
           <Label className="text-base">Name</Label>
@@ -98,7 +99,7 @@ export default function absenteeForm() {
             </PopoverContent>
           </Popover>
         </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5 text-white font-lato mt-5">
+        <div className="grid w-full max-w-sm items-center gap-1.5 text-white font-lato">
           <Label className="text-base">Reason</Label>
           <Input
             className="text-base"
