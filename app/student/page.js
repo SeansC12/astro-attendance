@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QrScanner } from "@yudiel/react-qr-scanner";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import {
@@ -14,6 +14,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Terminal, Waves } from "lucide-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 
 function page() {
   const [text, setText] = useState("");
@@ -23,6 +29,10 @@ function page() {
   const [successOpen, setSuccessOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [qrResult, setQrResult] = useState("");
+  const [
+    hasLoggedAttendanceToday,
+    setHasLoggedAttendanceToday,
+  ] = useState(false);
   const supabase = createClientComponentClient();
 
   async function scanned(result) {
@@ -52,19 +62,91 @@ function page() {
     const data = await res.json();
 
     setLoadingOpen(false);
-    console.log(res.status, data.message);
+
+    let attendanceStatus = JSON.parse(
+      localStorage.getItem("attendanceStatus")
+    );
+    if (!attendanceStatus) {
+      localStorage.setItem(
+        "attendanceStatus",
+        JSON.stringify([])
+      );
+      attendanceStatus = [];
+    }
+
+    const newAttendanceStatus = JSON.parse(
+      JSON.stringify(attendanceStatus)
+    );
+    console.log(
+      JSON.parse(localStorage.getItem("attendanceStatus"))
+    );
     if (res.status === 200) {
       setSuccessOpen(true);
       setText(data.message);
+
+      for (const day of newAttendanceStatus) {
+        if (day.date === `${dd}/${mm}/${yyyy}`) {
+          day.isAttendanceSuccessful = true;
+          localStorage.setItem(
+            "attendanceStatus",
+            newAttendanceStatus
+          );
+          return;
+        }
+      }
+      newAttendanceStatus.push({
+        date: `${dd}/${mm}/${yyyy}`,
+        hasLoggedAttendance: true,
+      });
+      localStorage.setItem(
+        "attendanceStatus",
+        JSON.stringify(newAttendanceStatus)
+      );
+      setHasLoggedAttendanceToday(true);
       return;
     } else if (res.status === 201) {
       setErrorOpen(true);
       setText(data.message);
+
+      for (const day of newAttendanceStatus) {
+        if (day.date === `${dd}/${mm}/${yyyy}`) {
+          day.isAttendanceSuccessful = false;
+          localStorage.setItem(
+            "attendanceStatus",
+            JSON.stringify(newAttendanceStatus)
+          );
+          return;
+        }
+      }
+      newAttendanceStatus.push({
+        date: `${dd}/${mm}/${yyyy}`,
+        hasLoggedAttendance: false,
+      });
+      localStorage.setItem(
+        "attendanceStatus",
+        JSON.stringify(newAttendanceStatus)
+      );
       return;
     }
 
     setText("Something went wrong. Please try again");
   }
+
+  useEffect(() => {
+    if (typeof window === undefined) return "";
+
+    try {
+      if (
+        JSON.parse(
+          localStorage.getItem("attendanceStatus")
+        )[0].hasLoggedAttendance
+      ) {
+        setHasLoggedAttendanceToday(true);
+      }
+    } catch (err) {
+      return "";
+    }
+  }, []);
 
   return (
     <div className="w-full h-full">
@@ -85,6 +167,11 @@ function page() {
         <button onClick={() => setConfirmationOpen(true)}>
           Test endpoint manually
         </button>
+        {hasLoggedAttendanceToday ? (
+          <HasTakenAttendanceAlert />
+        ) : (
+          <HasNotTakenAttendanceAlert />
+        )}
         <ConfirmationDialog
           open={confirmationOpen}
           setOpen={setConfirmationOpen}
@@ -223,6 +310,33 @@ function ErrorDialog({ open, setOpen, description }) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+function HasTakenAttendanceAlert() {
+  return (
+    <Alert className="h-max w-full max-w-xl border-2 dark:border-green-700 dark:text-green-700">
+      <Terminal className="h-4 w-4" />
+      <AlertTitle className="text-xl">
+        You have already logged your attendance for today!
+      </AlertTitle>
+      <AlertDescription className="text-base">
+        Don't worry, your attendance has been logged
+        already.
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+function HasNotTakenAttendanceAlert() {
+  return (
+    <Alert variant="destructive">
+      <Terminal className="h-4 w-full" />
+      <AlertTitle className="text-xl">Heads up!</AlertTitle>
+      <AlertDescription>
+        You have not logged your attendance for today.
+      </AlertDescription>
+    </Alert>
   );
 }
 
