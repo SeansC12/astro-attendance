@@ -136,12 +136,23 @@ function page() {
     if (typeof window === undefined) return "";
 
     try {
-      if (
-        JSON.parse(
-          localStorage.getItem("attendanceStatus")
-        )[0].hasLoggedAttendance
-      ) {
-        setHasLoggedAttendanceToday(true);
+      const attendanceLog = JSON.parse(
+        localStorage.getItem("attendanceStatus")
+      )[0].hasLoggedAttendance;
+
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, "0");
+      const mm = String(today.getMonth() + 1).padStart(
+        2,
+        "0"
+      );
+      const yyyy = today.getFullYear();
+
+      for (element of attendanceLog) {
+        if (element.date === `${dd}/${mm}/${yyyy}`) {
+          if (!element.hasLoggedAttendance) return;
+          setHasLoggedAttendanceToday(true);
+        }
       }
     } catch (err) {
       return "";
@@ -162,7 +173,6 @@ function page() {
             }}
             viewFinderBorder={10}
           />
-          <div>{text}</div>
         </div>
         <button onClick={() => setConfirmationOpen(true)}>
           Test endpoint manually
@@ -321,8 +331,7 @@ function HasTakenAttendanceAlert() {
         You have already logged your attendance for today!
       </AlertTitle>
       <AlertDescription className="text-base">
-        Don't worry, your attendance has been logged
-        already.
+        A valid attendance has been recorded for today.
       </AlertDescription>
     </Alert>
   );
@@ -330,11 +339,11 @@ function HasTakenAttendanceAlert() {
 
 function HasNotTakenAttendanceAlert() {
   return (
-    <Alert variant="destructive">
-      <Terminal className="h-4 w-full" />
+    <Alert className="h-max w-full max-w-xl border-2 dark:border-red-500 dark:text-red-500">
+      <Terminal className="h-4 w-4" />
       <AlertTitle className="text-xl">Heads up!</AlertTitle>
       <AlertDescription>
-        You have not logged your attendance for today.
+        No valid attendance was recorded today.
       </AlertDescription>
     </Alert>
   );
